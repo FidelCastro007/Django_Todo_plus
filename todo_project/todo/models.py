@@ -1,16 +1,17 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.auth.models import User
 
+# Custom user model
+class CustomUser(AbstractUser):
+    pass
+
+# Task model
 class Task(models.Model):
-    """
-    Model to represent a task in the to-do list.
-    """
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="tasks")
     title = models.CharField(max_length=255)
-    description = models.TextField()
-    password = models.CharField(max_length=255)  # Add a password field
+    description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')
 
-    def _str_(self):
+    def __str__(self):
         return self.title

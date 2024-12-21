@@ -21,16 +21,29 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
 ]
 
+
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # CorsMiddleware for CORS handling
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',  # CSRF middleware should stay here
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+SESSION_COOKIE_SAMESITE = 'Lax'  # Or 'Strict' if appropriate
+CSRF_COOKIE_HTTPONLY = True  # Helps with security
+# CSRF and CORS (if needed)
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+# Enable cookies
+SESSION_COOKIE_SECURE = False  # Set True for HTTPS
+CSRF_COOKIE_SECURE = False
 
 ROOT_URLCONF = 'todo_project.urls'
 
@@ -83,19 +96,27 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'todo.CustomUser'
+
 # settings.py
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # Default: Authentication required
-    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',  # JWT as default
+        'rest_framework.authentication.SessionAuthentication',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'UNAUTHENTICATED_USER': None,  # Prevent redirect
 }
+LOGIN_URL = '/api/login/'  # Update to your login API endpoint
 
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Frontend origin
+    "http://127.0.0.1:3000",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+DEBUG = False
+
+CORS_ALLOW_CREDENTIALS = True
+

@@ -1,127 +1,86 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status, viewsets
-from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import AccessToken
-from .models import Task
-from .serializers import TaskSerializer, UserSerializer
+from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+import json
+from .models import CustomUser, Task
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
-# Task List API (GET and POST)
-class TaskList(APIView):
-    """
-    Task List View for unauthenticated access
-    """
-    def get(self, request):
-        tasks = Task.objects.all()
-        serializer = TaskSerializer(tasks, many=True)
-        return Response(serializer.data)
+# Register a new user
+@csrf_exempt
+def register(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        username = data.get('username')
+        password = data.get('password')
 
-    def post(self, request):
-        serializer = TaskSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+        if CustomUser.objects.filter(username=username).exists():
+            return JsonResponse({'error': 'User already exists'}, status=400)
 
+        user = CustomUser.objects.create_user(username=username, password=password)
+        return JsonResponse({'message': 'User registered successfully'})
 
-# Task CRUD operations using ViewSet
-class TaskViewSet(viewsets.ModelViewSet):
-    """
-    Task CRUD operations
-    """
-    queryset = Task.objects.all()
-    serializer_class = TaskSerializer
-    permission_classes = [IsAuthenticated]  # Only authenticated users can access tasks
+# Login a user
+@csrf_protect  # Ensure CSRF protection
+def login_view(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        username = data.get('username')
+        password = data.get('password')
 
-    def perform_create(self, serializer):
-        """
-        Assign the task to the logged-in user
-        """
-        serializer.save(user=self.request.user)
-
-    def get_queryset(self):
-        """
-        Filter tasks by logged-in user (only show user's tasks)
-        """
-        return Task.objects.filter(user=self.request.user)
-
-
-# User Registration API
-class RegisterUserAPIView(APIView):
-    """
-    Register a new user
-    """
-    def post(self, request, *args, **kwargs):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# Login API
-class LoginAPIView(APIView):
-    """
-    Login a user and return an access token only
-    """
-    def post(self, request, *args, **kwargs):
-        username = request.data.get("username")
-        password = request.data.get("password")
-
-        if not username or not password:
-            return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
-
-        user = authenticate(username=username, password=password)
-
+        user = authenticate(request, username=username, password=password)
         if user is not None:
-            # Generate access token
-            access_token = AccessToken.for_user(user)
-            return Response({
-                "access": str(access_token)
-            }, status=status.HTTP_200_OK)
+            login(request, user)
+            return JsonResponse({"message": "Login successful!"}, status=200)
         else:
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+            return JsonResponse({"error": "Invalid username or password"}, status=401)
 
+    return JsonResponse({"error": "Invalid request method"}, status=405)
 
-# Task Detail API
-class TaskDetailView(APIView):
-    permission_classes = [IsAuthenticated]
+# Logout a user
+@csrf_exempt
+def logout_view(request):
+    if request.method == 'POST':
+        logout(request)
+        return JsonResponse({'message': 'Logout successful'})
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-    def get(self, request, pk):
-        """
-        Get details of a specific task
-        """
-        try:
-            task = Task.objects.get(pk=pk, user=request.user)
-        except Task.DoesNotExist:
-            return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
+# Get tasks
+@login_required
+def get_tasks(request):
+    tasks = Task.objects.filter(user=request.user)
+    task_list = [{'id': task.id, 'title': task.title, 'description': task.description} for task in tasks]
+    return JsonResponse({'tasks': task_list})
 
-        serializer = TaskSerializer(task)
-        return Response(serializer.data)
+# Add a task
+@csrf_exempt
+@login_required
+def add_task(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        title = data.get('title')
+        description = data.get('description')
+        task = Task.objects.create(user=request.user, title=title, description=description)
+        return JsonResponse({'message': 'Task added', 'task': {'id': task.id, 'title': task.title, 'description': task.description}})
 
-    def put(self, request, pk):
-        """
-        Update a specific task
-        """
-        try:
-            task = Task.objects.get(pk=pk, user=request.user)
-        except Task.DoesNotExist:
-            return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
+# Edit a task
+@csrf_exempt
+@login_required
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id, user=request.user)
+    if request.method == 'PUT':
+        data = json.loads(request.body)
+        task.title = data.get('title', task.title)
+        task.description = data.get('description', task.description)
+        task.save()
+        return JsonResponse({'message': 'Task updated'})
 
-        serializer = TaskSerializer(task, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk):
-        """
-        Delete a specific task
-        """
-        try:
-            task = Task.objects.get(pk=pk, user=request.user)
-            task.delete()
-            return Response({"message": "Task deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-        except Task.DoesNotExist:
-            return Response({"error": "Task not found"}, status=status.HTTP_404_NOT_FOUND)
+# Delete a task
+@csrf_exempt
+@login_required
+def delete_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id, user=request.user)
+    if request.method == 'DELETE':
+        task.delete()
+        return JsonResponse({'message': 'Task deleted'})
