@@ -33,12 +33,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-SESSION_COOKIE_SAMESITE = 'Lax'  # Or 'Strict' if appropriate
+SESSION_COOKIE_SAMESITE = 'None'  # Or 'Strict' if appropriate
 CSRF_COOKIE_HTTPONLY = True  # Helps with security
 # CSRF and CORS (if needed)
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
+    'http://127.0.0.1:8000',
 ]
 
 # Enable cookies
@@ -101,22 +102,20 @@ AUTH_USER_MODEL = 'todo.CustomUser'
 # settings.py
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
-    'UNAUTHENTICATED_USER': None,  # Prevent redirect
 }
 LOGIN_URL = '/api/login/'  # Update to your login API endpoint
 
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Frontend origin
-    "http://127.0.0.1:3000",
+    "http://127.0.0.1:8000",
 ]
 
 DEBUG = False
 
 CORS_ALLOW_CREDENTIALS = True
-

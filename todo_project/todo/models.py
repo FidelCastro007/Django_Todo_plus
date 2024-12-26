@@ -3,7 +3,7 @@ from django.db import models
 
 # Custom user model
 class CustomUser(AbstractUser):
-    pass
+    email = models.EmailField(unique=True)
 
 # Task model
 class Task(models.Model):

@@ -1,0 +1,165 @@
+/* General Body Styling */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom right, #6a11cb, #2575fc);
+  color: #333;
+}
+
+/* Auth Container Styling */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-form {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+}
+
+.auth-form h2 {
+  font-size: 1.8rem;
+  color: #4a4a4a;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.auth-form input,
+.auth-form textarea {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.auth-form button {
+  width: 100%;
+  background: #6c63ff;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.auth-form button:hover {
+  transform: scale(1.05);
+  background: #5a52d1;
+}
+
+/* Link Styling */
+.auth-form a {
+  text-decoration: none;
+  color: #007bff;
+  font-size: 0.9rem;
+}
+
+.auth-form a:hover {
+  text-decoration: underline;
+}
+
+/* Todo List Styling */
+.todo-container {
+  margin: 50px auto;
+  max-width: 800px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.todo-container h2 {
+  text-align: center;
+  color: #4a4a4a;
+  margin-bottom: 20px;
+}
+
+.task-input {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.task-input input,
+.task-input textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.task-input button {
+  align-self: flex-start;
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.task-input button:hover {
+  background: #218838;
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+}
+
+.task-list li {
+  margin-bottom: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.task-list li h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.task-list li p {
+  margin: 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+.task-list li button {
+  align-self: flex-end;
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.task-list li button:hover {
+  background: #c82333;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
