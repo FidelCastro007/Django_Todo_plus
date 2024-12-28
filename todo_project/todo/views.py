@@ -10,12 +10,18 @@ from django.core.validators import validate_email
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework import status
 from .serializers import TaskSerializer
+from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework.authentication import SessionAuthentication
+from django.views.decorators.csrf import csrf_protect
+
+
+@ensure_csrf_cookie
+def get_csrf(request):
+    return JsonResponse({'csrfToken': request.META.get('CSRF_COOKIE', '')})
 
 # Register View
 @csrf_exempt
@@ -49,6 +55,7 @@ def register_view(request):
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 # Login View
+@csrf_protect  # Protects the view with CSRF token verification
 @csrf_exempt
 @require_http_methods(["POST"])
 def login_view(request):
@@ -60,8 +67,7 @@ def login_view(request):
         user = authenticate(username=username, password=password)
         if user:
             login(request, user)
-            token, _ = Token.objects.get_or_create(user=user)
-            return JsonResponse({'message': 'Login successful', 'token': token.key})
+            return JsonResponse({'message': 'Login successful'})
         return JsonResponse({'error': 'Invalid credentials'}, status=400)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
@@ -79,8 +85,9 @@ def api_response(success, data=None, message=None, status=200):
 
 # Get All Tasks
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+@authentication_classes([SessionAuthentication])  # Use Session Authentication
+# @permission_classes([IsAuthenticated])  # Ensure the user is authenticated
+# @csrf_exempt
 def get_tasks(request):
     try:
         tasks = Task.objects.filter(user=request.user)
@@ -90,9 +97,10 @@ def get_tasks(request):
         return api_response(False, message=str(e), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # Add a Task
+@csrf_exempt
 @api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+@authentication_classes([SessionAuthentication])  # Use Session Authentication
+@permission_classes([IsAuthenticated])  # Ensure the user is authenticated
 def add_task(request):
     try:
         data = request.data
@@ -108,9 +116,10 @@ def add_task(request):
         return api_response(False, message=str(e), status_code=status.HTTP_400_BAD_REQUEST)
 
 # Edit a Task
+@csrf_exempt
 @api_view(['PUT'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+@authentication_classes([SessionAuthentication])  # Use Session Authentication
+@permission_classes([IsAuthenticated])  # Ensure the user is authenticated
 def edit_task(request, task_id):
     try:
         task = Task.objects.get(id=task_id, user=request.user)
@@ -125,9 +134,10 @@ def edit_task(request, task_id):
         return api_response(False, message=str(e), status_code=status.HTTP_400_BAD_REQUEST)
 
 # Delete a Task
+@csrf_exempt
 @api_view(['DELETE'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+@authentication_classes([SessionAuthentication])  # Use Session Authentication
+@permission_classes([IsAuthenticated])  # Ensure the user is authenticated
 def delete_task(request, task_id):
     try:
         task = Task.objects.get(id=task_id, user=request.user)
