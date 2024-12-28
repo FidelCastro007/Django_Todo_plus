@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import 'animate.css';
+import { getCsrfToken } from './csrf';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -12,15 +13,19 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/login/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-
+       const csrfToken = await getCsrfToken();
+        const response = await fetch('http://127.0.0.1:8000/api/login/', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+          },
+          body: JSON.stringify({ username, password }),
+        });
       const data = await response.json();
       if (response.ok) {
-        localStorage.setItem('token', data.token);
+        // localStorage.setItem('token', data.token);
         setMessage(data.message);
         navigate('/tasks');
       } else {
