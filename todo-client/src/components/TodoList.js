@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
 import 'animate.css';
+import { getCsrfToken } from './csrf';
 
 const TodoList = () => {
   const [tasks, setTasks] = useState([]);
@@ -15,17 +16,11 @@ const TodoList = () => {
   // Fetch tasks from API
   const fetchTasks = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
+      const csrfToken = await getCsrfToken(); // Get CSRF token
       const response = await fetch('http://127.0.0.1:8000/api/tasks/', {
         method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
+        headers: { 'X-CSRFToken': csrfToken }, // CSRF token for authentication
+        credentials: 'include',
       });
 
       const data = await response.json();
@@ -33,26 +28,29 @@ const TodoList = () => {
         setTasks(data.tasks || []);
       } else {
         setMessage('Failed to fetch tasks. Please log in again.');
-        console.error(data.error);
+        // navigate('/login')
+        console.error(data);
       }
     } catch (error) {
       setMessage('Error fetching tasks.');
-      console.error('Error fetching tasks:', error);
+      console.error('Error fetching tasks:', error.message);
     }
   };
 
   // Add a new task
   const handleAddTask = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const csrfToken = await getCsrfToken(); // Get CSRF token
       const response = await fetch('http://127.0.0.1:8000/api/tasks/add/', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'X-CSRFToken': csrfToken, // CSRF token for authentication
         },
         body: JSON.stringify({ title, description }),
       });
+
       const data = await response.json();
       if (response.ok) {
         fetchTasks();
@@ -64,19 +62,21 @@ const TodoList = () => {
       }
     } catch (error) {
       setMessage('Error adding task.');
+      console.error('Error adding task:', error);
     }
   };
 
   // Delete a task
   const handleDeleteTask = async (taskId) => {
     try {
-      const token = localStorage.getItem('token');
+      const csrfToken = await getCsrfToken(); // Get CSRF token
       const response = await fetch(`http://127.0.0.1:8000/api/tasks/delete/${taskId}/`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'X-CSRFToken': csrfToken, // CSRF token for authentication
         },
       });
+
       const data = await response.json();
       if (response.ok) {
         fetchTasks();
@@ -86,21 +86,23 @@ const TodoList = () => {
       }
     } catch (error) {
       setMessage('Error deleting task.');
+      console.error('Error deleting task:', error);
     }
   };
 
   // Handle editing task
   const handleEditTask = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const csrfToken = await getCsrfToken(); // Get CSRF token
       const response = await fetch(`http://127.0.0.1:8000/api/tasks/edit/${editingTaskId}/`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'X-CSRFToken': csrfToken, // CSRF token for authentication
         },
         body: JSON.stringify({ title, description }),
       });
+
       const data = await response.json();
       if (response.ok) {
         fetchTasks();
@@ -113,6 +115,7 @@ const TodoList = () => {
       }
     } catch (error) {
       setMessage('Error updating task.');
+      console.error('Error updating task:', error);
     }
   };
 
@@ -126,16 +129,17 @@ const TodoList = () => {
   // Handle logout
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const csrfToken = await getCsrfToken(); // Get CSRF token
       const response = await fetch('http://127.0.0.1:8000/api/logout/', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'X-CSRFToken': csrfToken, // CSRF token for authentication
         },
       });
+
       const data = await response.json();
       if (response.ok) {
-        localStorage.removeItem('token');
+        localStorage.removeItem('token'); // Clear token if stored locally
         navigate('/login');
         setMessage(data.message || 'Successfully logged out');
       } else {
@@ -143,13 +147,14 @@ const TodoList = () => {
       }
     } catch (error) {
       setMessage('Error logging out.');
+      console.error('Error logging out:', error);
     }
   };
 
   // Fetch tasks on component mount
   useEffect(() => {
     fetchTasks();
-  });
+  }, []); // Empty dependency array to avoid infinite re-renders
 
   return (
     <div className="todo-container">
@@ -192,7 +197,7 @@ const TodoList = () => {
 
       {/* Logout button */}
       <div className="logout">
-        <button  onClick={handleLogout}>Logout</button>
+        <button onClick={handleLogout}>Logout</button>
       </div>
     </div>
   );
