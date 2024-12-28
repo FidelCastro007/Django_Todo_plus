@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework.authtoken',
 ]
 
 
@@ -39,7 +40,6 @@ CSRF_COOKIE_HTTPONLY = True  # Helps with security
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
-    'http://127.0.0.1:8000',
 ]
 
 # Enable cookies
@@ -101,11 +101,11 @@ AUTH_USER_MODEL = 'todo.CustomUser'
 
 # settings.py
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
+    ],
+     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
     ],
 }
 LOGIN_URL = '/api/login/'  # Update to your login API endpoint
@@ -113,7 +113,6 @@ LOGIN_URL = '/api/login/'  # Update to your login API endpoint
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Frontend origin
-    "http://127.0.0.1:8000",
 ]
 
 DEBUG = False
