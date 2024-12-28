@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../App.css';
+import 'animate.css';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -33,8 +34,8 @@ const Register = () => {
   return (
     <div className="auth-container">
       <form onSubmit={handleRegister} className="auth-form">
-        <h2>Register</h2>
-        <p class='text-danger bg-light'>{message}</p>
+      <h2 className="animate__animated animate__bounce">Register</h2>
+        <p className='text-danger bg-light'>{message}</p>
         <input
           type="text"
           placeholder="Username"
