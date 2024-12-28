@@ -113,7 +113,7 @@ body {
 }
 
 .task-input button:hover {
-  background: #218838;
+  background: #46adcc;
 }
 
 .task-list {
@@ -162,4 +162,20 @@ body {
   color: red;
   font-size: 14px;
   margin-bottom: 10px;
+}
+
+.logout button {
+  align-self: flex-start;
+  border: none;
+  color: rgb(248, 245, 245);
+  background: #f1193a;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.logout button:hover {
+  background: #f50909;
+  color:#e2dbdc;
 }
