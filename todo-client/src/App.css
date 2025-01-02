@@ -97,7 +97,7 @@ body {
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid #1facee;
   font-size: 1rem;
 }
 
@@ -125,7 +125,7 @@ body {
   margin-bottom: 15px;
   padding: 15px;
   background: #f8f9fa;
-  border: 1px solid #ddd;
+  border: 1px solid #73c5f5;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
@@ -140,7 +140,7 @@ body {
 .task-list li p {
   margin: 0;
   font-size: 1rem;
-  color: #555;
+  color: #2e2e2e;
 }
 
 .task-list li button {
@@ -239,4 +239,72 @@ body {
 
 .task-input button.save-button:active {
   transform: scale(0.98);
+}
+
+.task-completed h3, 
+.task-completed p {
+  text-decoration: line-through;
+  color: #f10b0b;
+  animation: crossOut 1s forwards;
+}
+
+.animate {
+  animation: bounceIn 1s; /* Example animation class */
+}
+
+@keyframes crossOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0.8;
+    transform: translateY(5px);
+  }
+}
+
+
+@keyframes completeButtonHover {
+  0% {
+    transform: scale(1);
+    background-color: #19f19e;
+  }
+  50% {
+    transform: scale(1.1);
+    background-color: #1145ec;
+  }
+  100% {
+    transform: scale(1);
+    background-color: #0ec244;
+  }
+}
+
+.task-list li button.complete {
+  align-self: flex-start;
+  border: none;
+  color: rgb(248, 245, 245);
+  background: #19c6f1;
+  margin-top: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  animation: none; /* No initial animation */
+}
+
+/* Hover effect */
+.task-list li button.complete:hover {
+  background: #11ec6c;
+  color: #e2dbdc;
+  animation: editButtonHover 0.6s ease-in-out; /* Applying animation on hover */
+}
+
+/* Add this hover effect for the task button too */
+.task-list li button.complete:active {
+  transform: scale(0.98); /* Slightly scale down when clicked */
+}
+
+button.complete:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
