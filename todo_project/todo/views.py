@@ -1,20 +1,9 @@
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
-import json
 from .models import Task
 from .models import CustomUser
-import json
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework import status
-from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, logout
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication,TokenAuthentication
 from .models import Task
 from .serializers import TaskSerializer
 from django.core.exceptions import ValidationError
@@ -23,7 +12,7 @@ from django.middleware.csrf import get_token
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import MyTokenObtainPairSerializer
-from rest_framework import generics,permissions
+from rest_framework import generics
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -164,3 +153,19 @@ class DeleteTaskView(APIView):
             return JsonResponse({'error': 'Task not found'}, status=404)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
+
+class CompleteTaskView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = TaskSerializer
+
+    def put(self, request, task_id):
+        try:
+            task = Task.objects.get(id=task_id, user=request.user)
+            task.is_completed = True
+            task.save()
+            return JsonResponse({'message': 'Task marked as complete'})
+        except Task.DoesNotExist:
+            return JsonResponse({'error': 'Task not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
