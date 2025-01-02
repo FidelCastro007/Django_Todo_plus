@@ -4,7 +4,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-e18v7-sa^r+@-0g7*r6gjn8@g_i&*m_0tdgwz*2qv9366xbqz0'
 
-DEBUG = True
+DEBUG = False  # Set to False in production
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
@@ -22,29 +22,15 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 ]
 
-
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # CorsMiddleware for CORS handling
+    'corsheaders.middleware.CorsMiddleware',  # CORS Middleware for CORS handling
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',  # CSRF middleware should stay here
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-SESSION_COOKIE_SAMESITE = 'None'  # Or 'Strict' if appropriate
-CSRF_COOKIE_HTTPONLY = True  # Helps with security
-# CSRF and CORS (if needed)
-
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-]
-
-# Enable cookies
-SESSION_COOKIE_SECURE = False  # Set True for HTTPS
-CSRF_COOKIE_SECURE = False
 
 ROOT_URLCONF = 'todo_project.urls'
 
@@ -74,9 +60,11 @@ DATABASES = {
         'PASSWORD': 'admin123',  # Your MySQL password
         'HOST': '127.0.0.1',  # or 'localhost'
         'PORT': '3306',  # Default MySQL port
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -99,25 +87,40 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'todo.CustomUser'
 
-# settings.py
+# JWT Settings
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
-     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
+
 LOGIN_URL = '/api/login/'  # Update to your login API endpoint
 
+# JWT settings for token lifetime
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # 1 hour access token
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # 7 days refresh token
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'UPDATE_LAST_LOGIN': False,
+}
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',  # Frontend origin
-]
+# Cookie settings
+SESSION_COOKIE_AGE = 1209600  # Two weeks
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_NAME = 'sessionid'
 
-DEBUG = False
+CSRF_COOKIE_SECURE = False  # Should be True in production with HTTPS
+SESSION_COOKIE_SECURE = False  # Should be True in production with HTTPS
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000']  # Ensure this matches frontend URL
+
+# CSRF-related settings have been removed since you're using JWT
+# CSRF_COOKIE_HTTPONLY and other CSRF settings have been removed.
+
