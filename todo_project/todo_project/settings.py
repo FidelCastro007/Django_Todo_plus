@@ -102,7 +102,7 @@ LOGIN_URL = '/api/login/'  # Update to your login API endpoint
 # JWT settings for token lifetime
 from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # 1 hour access token
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=140),  # 1 hour access token
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # 7 days refresh token
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
