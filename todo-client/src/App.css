@@ -113,7 +113,7 @@ body {
 }
 
 .task-input button:hover {
-  background: #46adcc;
+  background: #20cf7e;
 }
 
 .task-list {
@@ -178,4 +178,65 @@ body {
 .logout button:hover {
   background: #f50909;
   color:#e2dbdc;
+}
+
+/* Animation for the edit button */
+@keyframes editButtonHover {
+  0% {
+    transform: scale(1);
+    background-color: #19c6f1;
+  }
+  50% {
+    transform: scale(1.1);
+    background-color: #1145ec;
+  }
+  100% {
+    transform: scale(1);
+    background-color: #19c6f1;
+  }
+}
+
+.task-list li button.edit {
+  align-self: flex-start;
+  border: none;
+  color: rgb(248, 245, 245);
+  background: #19c6f1;
+  margin-top: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  animation: none; /* No initial animation */
+}
+
+/* Hover effect */
+.task-list li button.edit:hover {
+  background: #1145ec;
+  color: #e2dbdc;
+  animation: editButtonHover 0.6s ease-in-out; /* Applying animation on hover */
+}
+
+/* Add this hover effect for the task button too */
+.task-list li button.edit:active {
+  transform: scale(0.98); /* Slightly scale down when clicked */
+}
+
+/* Styling for Save Changes button */
+.task-input button.save-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.task-input button.save-button:hover {
+  background-color: #480ed1;
+}
+
+.task-input button.save-button:active {
+  transform: scale(0.98);
 }
