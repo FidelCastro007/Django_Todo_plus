@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 import 'animate.css';
-import { getCsrfToken } from './csrf';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -13,19 +13,19 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-       const csrfToken = await getCsrfToken();
-        const response = await fetch('http://127.0.0.1:8000/api/login/', {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken,
-          },
-          body: JSON.stringify({ username, password }),
-        });
+      const response = await fetch('http://127.0.0.1:8000/api/login/', {
+        method: 'POST',
+        credentials: 'include', // Include credentials for session management
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+  
       const data = await response.json();
-      if (response.ok) {
-        // localStorage.setItem('token', data.token);
+      if (data.access_token) {
+        // Store the access token in localStorage
+        localStorage.setItem('access_token', data.access_token);
         setMessage(data.message);
         navigate('/tasks');
       } else {
@@ -34,8 +34,7 @@ const Login = () => {
     } catch (error) {
       setMessage('Error during login.');
     }
-  };
-  
+  };  
 
   return (
     <div className="auth-container">
