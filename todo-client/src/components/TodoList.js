@@ -11,6 +11,7 @@ const TodoList = () => {
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const [animatedTask, setAnimatedTask] = useState(null);
 
   // Fetch tasks from API
   const fetchTasks = async () => {
@@ -180,12 +181,66 @@ const TodoList = () => {
     }
   };
 
+  // Mark task as completed
+  const handleCompleteTask = async (taskId) => {
+    const task = tasks.find((t) => t.id === taskId);
+    if (task && task.completed) {
+      setMessage('Task is already completed.');
+      return; // Exit early if the task is already completed
+    }
+  
+    try {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        setMessage('No token found. Please log in.');
+        return;
+      }
+  
+      const response = await fetch(`http://127.0.0.1:8000/api/tasks/complete/${taskId}/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (response.ok) {
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === taskId ? { ...task, completed: true } : task
+          )
+        );
+        setAnimatedTask(taskId);
+        setTimeout(() => setAnimatedTask(null), 1000);
+        setMessage('Task marked as completed');
+      } else {
+        const data = await response.json();
+        setMessage(data.error || 'Failed to mark task as completed');
+      }
+    } catch (error) {
+      setMessage('Error completing task.');
+      console.error('Error completing task:', error);
+    }
+  };
+  
+  
+
   // Set task details for editing
   const startEditing = (task) => {
     setEditingTaskId(task.id);
     setTitle(task.title);
     setDescription(task.description);
   };
+
+  const getToken = () => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      setMessage('No token found. Please log in.');
+      throw new Error('Token missing');
+    }
+    return token;
+  };
+  
 
   // Fetch tasks on component mount
   useEffect(() => {
@@ -222,12 +277,15 @@ const TodoList = () => {
       {/* Task list */}
       <ul className="task-list">
         {tasks.map((task) => (
-          <li key={task.id}>
-            <h3>{task.title}</h3>
-            <p>{task.description}</p>
-            <button className="edit" onClick={() => startEditing(task)}>Edit</button>
-            <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
-          </li>
+          <li key={task.id} className={`task ${task.completed ? 'task-completed' : ''} ${animatedTask === task.id ? 'animate' : ''}`}>
+          <h3>{task.title}</h3>
+          <p>{task.description}</p>
+          <button className="edit" onClick={() => startEditing(task)}>Edit</button>
+          <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
+          {!task.completed && (
+            <button className="complete" onClick={() => handleCompleteTask(task.id)} disabled={task.completed}>Complete</button>
+          )}
+        </li>
         ))}
       </ul>
 
