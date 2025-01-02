@@ -16,7 +16,7 @@
 # ]
 
 from django.urls import path
-from .views import CSRFTokenView, RegisterView, LoginView, LogoutView, TaskListView, AddTaskView, EditTaskView, DeleteTaskView,MyTokenObtainPairView
+from .views import CSRFTokenView, RegisterView, LoginView, LogoutView, TaskListView, AddTaskView, EditTaskView, DeleteTaskView,MyTokenObtainPairView,CompleteTaskView
 
 urlpatterns = [
     path('csrf/', CSRFTokenView.as_view(), name='csrf-token'),
@@ -28,4 +28,5 @@ urlpatterns = [
     path('tasks/edit/<int:task_id>/', EditTaskView.as_view(), name='edit-task'),
     path('tasks/delete/<int:task_id>/', DeleteTaskView.as_view(), name='delete-task'),
     path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('tasks/complete/<int:task_id>/', CompleteTaskView.as_view(), name='complete-task'),
 ]
