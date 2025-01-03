@@ -21,7 +21,7 @@ const TodoList = () => {
       return;
     }
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/tasks/', {
+      const response = await fetch('https://django-todo-plus.onrender.com/api/tasks/', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -50,7 +50,7 @@ const TodoList = () => {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/tasks/add/', {
+      const response = await fetch('https://django-todo-plus.onrender.com/api/tasks/add/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ const TodoList = () => {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/logout/', {
+      const response = await fetch('https://django-todo-plus.onrender.com/api/logout/', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -113,7 +113,7 @@ const TodoList = () => {
     }
     try {
       const token = getToken();
-      const response = await fetch(`http://127.0.0.1:8000/api/tasks/delete/${taskId}/`, {
+      const response = await fetch(`https://django-todo-plus.onrender.com/api/tasks/delete/${taskId}/`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -146,7 +146,7 @@ const TodoList = () => {
   const handleEditTask = async () => {
     const token = getToken();
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/tasks/edit/${editingTaskId}/`, {
+      const response = await fetch(`https://django-todo-plus.onrender.com/api/tasks/edit/${editingTaskId}/`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ const TodoList = () => {
   
     try {
       const token = getToken();
-      const response = await fetch(`http://127.0.0.1:8000/api/tasks/complete/${taskId}/`, {
+      const response = await fetch(`https://django-todo-plus.onrender.com/api/tasks/complete/${taskId}/`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
