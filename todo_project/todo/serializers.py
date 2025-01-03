@@ -7,7 +7,7 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
 
-        fields = ['id','user', 'title', 'description']  # Explicitly include fields you need
+        fields = ['id','user', 'title', 'description','completed']  # Explicitly include fields you need
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
