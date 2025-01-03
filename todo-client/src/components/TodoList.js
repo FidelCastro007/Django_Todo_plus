@@ -112,12 +112,7 @@ const TodoList = () => {
       return;
     }
     try {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        setMessage('No token found. Please log in.');
-        return;
-      }
-  
+      const token = getToken();
       const response = await fetch(`http://127.0.0.1:8000/api/tasks/delete/${taskId}/`, {
         method: 'DELETE',
         headers: {
@@ -149,12 +144,7 @@ const TodoList = () => {
 
   // Handle editing task
   const handleEditTask = async () => {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      setMessage('No token found. Please log in.');
-      return;
-    }
-
+    const token = getToken();
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/tasks/edit/${editingTaskId}/`, {
         method: 'PUT',
@@ -190,12 +180,7 @@ const TodoList = () => {
     }
   
     try {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        setMessage('No token found. Please log in.');
-        return;
-      }
-  
+      const token = getToken();
       const response = await fetch(`http://127.0.0.1:8000/api/tasks/complete/${taskId}/`, {
         method: 'PUT',
         headers: {
