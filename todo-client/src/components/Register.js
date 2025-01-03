@@ -14,7 +14,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(https://django-todo-plus.onrender.com/api/register/', {
+      const response = await fetch('https://django-todo-plus.onrender.com/api/register/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json'
          },
