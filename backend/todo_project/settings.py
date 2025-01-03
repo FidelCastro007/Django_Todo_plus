@@ -7,7 +7,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = False  # Set to False in production
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost','https://django-todo-plus.onrender.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','https://django-todo-plus.onrender.com','https://django-todo-plus.vercel.app']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -121,7 +121,7 @@ CSRF_COOKIE_SECURE = False  # Should be True in production with HTTPS
 SESSION_COOKIE_SECURE = False  # Should be True in production with HTTPS
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000']  # Ensure this matches frontend URL
+CORS_ALLOWED_ORIGINS = ['https://django-todo-plus.vercel.app']  # Ensure this matches frontend URL
 
 # CSRF-related settings have been removed since you're using JWT
 # CSRF_COOKIE_HTTPONLY and other CSRF settings have been removed.
