@@ -7,7 +7,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = False  # Set to False in production
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','https://django-todo-plus.onrender.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
