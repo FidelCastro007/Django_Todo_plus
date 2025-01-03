@@ -1,8 +1,9 @@
 from pathlib import Path
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-e18v7-sa^r+@-0g7*r6gjn8@g_i&*m_0tdgwz*2qv9366xbqz0'
+SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = False  # Set to False in production
 
@@ -55,13 +56,14 @@ WSGI_APPLICATION = 'todo_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'todo_db',  # Your MySQL database name
-        'USER': 'admin1',  # Your MySQL username
-        'PASSWORD': 'admin123',  # Your MySQL password
-        'HOST': '127.0.0.1',  # or 'localhost'
-        'PORT': '3306',  # Default MySQL port
+        'NAME': 'todo_DB',
+        'USER': 'root',
+        'PASSWORD': 'lwWdYciVcafdzaoSsCpuxGCBNJRqYmqE',
+        'HOST': 'junction.proxy.rlwy.net',
+        'PORT': '57966',
         'OPTIONS': {
             'charset': 'utf8mb4',
+            'ssl': {'ca': None},  # Disable SSL verification
         },
     }
 }
@@ -123,4 +125,3 @@ CORS_ALLOWED_ORIGINS = ['http://localhost:3000']  # Ensure this matches frontend
 
 # CSRF-related settings have been removed since you're using JWT
 # CSRF_COOKIE_HTTPONLY and other CSRF settings have been removed.
-
