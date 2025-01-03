@@ -162,7 +162,7 @@ class CompleteTaskView(APIView):
     def put(self, request, task_id):
         try:
             task = Task.objects.get(id=task_id, user=request.user)
-            task.is_completed = True
+            task.completed = True
             task.save()
             return JsonResponse({'message': 'Task marked as complete'})
         except Task.DoesNotExist:
