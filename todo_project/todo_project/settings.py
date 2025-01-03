@@ -55,13 +55,14 @@ WSGI_APPLICATION = 'todo_project/todo_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'todo_db',  # Your MySQL database name
-        'USER': 'admin1',  # Your MySQL username
-        'PASSWORD': 'admin123',  # Your MySQL password
-        'HOST': '127.0.0.1',  # or 'localhost'
-        'PORT': '3306',  # Default MySQL port
+        'NAME': 'todo_DB',
+        'USER': 'root',
+        'PASSWORD': 'lwWdYciVcafdzaoSsCpuxGCBNJRqYmqE',
+        'HOST': 'junction.proxy.rlwy.net',
+        'PORT': '57966',
         'OPTIONS': {
             'charset': 'utf8mb4',
+            'ssl': {'ca': None},  # Disable SSL verification
         },
     }
 }
