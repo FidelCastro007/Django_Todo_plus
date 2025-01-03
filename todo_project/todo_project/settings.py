@@ -51,7 +51,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'todo_project.wsgi.application'
+WSGI_APPLICATION = 'todo_project/todo_project.wsgi.application'
 
 DATABASES = {
     'default': {
