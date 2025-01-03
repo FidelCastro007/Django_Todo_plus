@@ -305,6 +305,6 @@ body {
 }
 
 button.complete:disabled {
-  background-color: #ccc;
+  background-color: #ec1313;
   cursor: not-allowed;
 }
