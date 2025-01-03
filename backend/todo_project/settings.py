@@ -121,7 +121,10 @@ CSRF_COOKIE_SECURE = False  # Should be True in production with HTTPS
 SESSION_COOKIE_SECURE = False  # Should be True in production with HTTPS
 
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ['https://django-todo-plus.vercel.app']  # Ensure this matches frontend URL
+CORS_ALLOWED_ORIGINS = [
+    "https://django-todo-plus.vercel.app",
+    "https://django-todo-plus.onrender.com",
+]  # Ensure this matches frontend URL
 
 # CSRF-related settings have been removed since you're using JWT
 # CSRF_COOKIE_HTTPONLY and other CSRF settings have been removed.
